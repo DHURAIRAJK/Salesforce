@@ -15,11 +15,11 @@ on:
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
-  # This workflow contains a single job called "build"
-  build:
-     runs-on: windows-latest
-      steps:
-      - name: Checkout code
+  build-and-deploy:
+    runs-on: windows-latest
+
+    steps:
+    - name: Checkout code
       uses: actions/checkout@v2
 
     - name: Set up Node.js
@@ -62,4 +62,24 @@ jobs:
 
     - name: Setup Salesforce CLI
       uses: forcedotcom/cli-action@v1
-   
+
+    - name: Login to Salesforce developer environment
+      run: |
+        sfdx auth:jwt:grant --clientid ${{ secrets.SF_DEV_CLIENT_ID }} --jwtkeyfile ${{ secrets.SF_JWT_KEY }} --username ${{ secrets.SF_DEV_USERNAME }} --instanceurl https://login.salesforce.com
+
+    - name: Deploy to Salesforce developer environment
+      run: sfdx force:source:deploy -p force-app/main/default
+
+    - name: Login to Salesforce SIT environment
+      run: |
+        sfdx auth:jwt:grant --clientid ${{ secrets.SF_SIT_CLIENT_ID }} --jwtkeyfile ${{ secrets.SF_JWT_KEY }} --username ${{ secrets.SF_SIT_USERNAME }} --instanceurl https://test.salesforce.com
+
+    - name: Deploy to Salesforce SIT environment
+      run: sfdx force:source:deploy -p force-app/main/default
+
+    - name: Login to Salesforce PROD environment
+      run: |
+        sfdx auth:jwt:grant --clientid ${{ secrets.SF_PROD_CLIENT_ID }} --jwtkeyfile ${{ secrets.SF_JWT_KEY }} --username ${{ secrets.SF_PROD_USERNAME }} --instanceurl https://login.salesforce.com
+
+    - name: Deploy to Salesforce PROD environment
+      run: sfdx force:source:deploy -p force-app/main/default
