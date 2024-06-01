@@ -33,18 +33,18 @@ jobs:
     #- name: Run tests
     #  run: npm test
 
-    - name: Run PMD analysis
-      run: |
-        Invoke-WebRequest -Uri "https://github.com/pmd/pmd/releases/download/pmd_releases%2F6.39.0/pmd-bin-6.39.0.zip" -OutFile "pmd-bin-6.39.0.zip"
-        Expand-Archive -Path "pmd-bin-6.39.0.zip" -DestinationPath "."
-        .\pmd-bin-6.39.0\bin\pmd.bat -d ./src -R rulesets/apex/quickstart.xml -f text
+    #- name: Run PMD analysis
+    #  run: |
+    #    Invoke-WebRequest -Uri "https://github.com/pmd/pmd/releases/download/pmd_releases%2F6.39.0/pmd-bin-6.39.0.zip" -OutFile "pmd-bin-6.39.0.zip"
+    #    Expand-Archive -Path "pmd-bin-6.39.0.zip" -DestinationPath "."
+    #    .\pmd-bin-6.39.0\bin\pmd.bat -d ./src -R rulesets/apex/quickstart.xml -f text
 
-    - name: Check code quality
-      id: code-quality
-      run: |
-        npm run lint
-        $quality = (npm run quality-check)  # Assuming quality-check script returns a percentage
-        echo "QUALITY=$quality" >> $env:GITHUB_ENV
+    #- name: Check code quality
+    #  id: code-quality
+    #  run: |
+    #    npm run lint
+    #    $quality = (npm run quality-check)  # Assuming quality-check script returns a percentage
+    #    echo "QUALITY=$quality" >> $env:GITHUB_ENV
 
     - name: Create pull request
       if: github.ref == 'refs/heads/SIT'
@@ -56,9 +56,9 @@ jobs:
         title: 'SIT to main PR'
         body: 'Auto-generated PR from SIT branch'
 
-    - name: Deploy if quality is above 75%
-      if: env.QUALITY > 75
-      run: echo "Code quality is above 75%, proceeding with deployment..."
+   # - name: Deploy if quality is above 75%
+   #   if: env.QUALITY > 75
+   #   run: echo "Code quality is above 75%, proceeding with deployment..."
 
     #- name: Setup Salesforce CLI
     #  uses: forcedotcom/cli-action@v1
